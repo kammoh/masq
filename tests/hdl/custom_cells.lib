@@ -1,0 +1,75 @@
+library(demo) {
+  cell(BUF) {
+    area: 0.1;
+    pin(A) { direction: input; }
+    pin(Y) { direction: output;
+              function: "A"; }
+  }
+  cell(NOT) {
+    area: 0.1;
+    pin(A) { direction: input; }
+    pin(Y) { direction: output;
+              function: "A'"; }
+  }
+  cell(NAND) {
+    area: 8;
+    pin(A) { direction: input; }
+    pin(B) { direction: input; }
+    pin(Y) { direction: output;
+             function: "(A*B)'"; }
+  }
+  cell(AND) {
+    area: 8;
+    pin(A) { direction: input; }
+    pin(B) { direction: input; }
+    pin(Y) { direction: output;
+             function: "(A*B)"; }
+  }
+  cell(NOR) {
+    area: 10;
+    pin(A) { direction: input; }
+    pin(B) { direction: input; }
+    pin(Y) { direction: output;
+             function: "(A+B)'"; }
+  }
+  cell(OR) {
+    area: 10;
+    pin(A) { direction: input; }
+    pin(B) { direction: input; }
+    pin(Y) { direction: output;
+             function: "(A+B)"; }
+  }
+  cell(XOR) {
+    area: 0.1;
+    pin(A) { direction: input; }
+    pin(B) { direction: input; }
+    pin(Y) { direction: output;
+             function: "(A^B)"; }
+  }
+  cell(XNOR) {
+    area: 0.1;
+    pin(A) { direction: input; }
+    pin(B) { direction: input; }
+    pin(Y) { direction: output;
+             function: "(A^B)'"; }
+  }
+  cell(DFF) {
+    area: 0.1;
+    ff(IQ, IQN) { clocked_on: C;
+                  next_state: D; }
+    pin(C) { direction: input;
+                 clock: true; }
+    pin(D) { direction: input; }
+    pin(Q) { direction: output;
+              function: "IQ"; }
+  }
+
+  cell (MUX) {
+    area                : 1;
+    pin (A) { direction : input; }
+    pin (B) { direction : input; }
+    pin (S) { direction : input; }
+    pin (Z) { direction : output;
+               function : "((S & B) | (A & !S))"; }
+  }
+}

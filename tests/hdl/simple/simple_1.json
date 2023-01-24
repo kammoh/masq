@@ -1,0 +1,825 @@
+{
+  "creator": "Yosys 0.25+60 (git sha1 e1674137c, clang 14.0.0 -fPIC -Os)",
+  "modules": {
+    "AND": {
+      "attributes": {
+        "blackbox": "00000000000000000000000000000001"
+      },
+      "ports": {
+        "A": {
+          "direction": "input",
+          "bits": [ 2 ]
+        },
+        "B": {
+          "direction": "input",
+          "bits": [ 3 ]
+        },
+        "Y": {
+          "direction": "output",
+          "bits": [ 4 ]
+        }
+      },
+      "cells": {
+      },
+      "netnames": {
+        "A": {
+          "hide_name": 0,
+          "bits": [ 2 ],
+          "attributes": {
+          }
+        },
+        "B": {
+          "hide_name": 0,
+          "bits": [ 3 ],
+          "attributes": {
+          }
+        },
+        "Y": {
+          "hide_name": 0,
+          "bits": [ 4 ],
+          "attributes": {
+          }
+        }
+      }
+    },
+    "BUF": {
+      "attributes": {
+        "blackbox": "00000000000000000000000000000001"
+      },
+      "ports": {
+        "A": {
+          "direction": "input",
+          "bits": [ 2 ]
+        },
+        "Y": {
+          "direction": "output",
+          "bits": [ 3 ]
+        }
+      },
+      "cells": {
+      },
+      "netnames": {
+        "A": {
+          "hide_name": 0,
+          "bits": [ 2 ],
+          "attributes": {
+          }
+        },
+        "Y": {
+          "hide_name": 0,
+          "bits": [ 3 ],
+          "attributes": {
+          }
+        }
+      }
+    },
+    "DFF": {
+      "attributes": {
+        "blackbox": "00000000000000000000000000000001"
+      },
+      "ports": {
+        "C": {
+          "direction": "input",
+          "bits": [ 2 ]
+        },
+        "D": {
+          "direction": "input",
+          "bits": [ 3 ]
+        },
+        "Q": {
+          "direction": "output",
+          "bits": [ 4 ]
+        }
+      },
+      "cells": {
+      },
+      "netnames": {
+        "C": {
+          "hide_name": 0,
+          "bits": [ 2 ],
+          "attributes": {
+          }
+        },
+        "D": {
+          "hide_name": 0,
+          "bits": [ 3 ],
+          "attributes": {
+          }
+        },
+        "Q": {
+          "hide_name": 0,
+          "bits": [ 4 ],
+          "attributes": {
+          }
+        }
+      }
+    },
+    "MUX": {
+      "attributes": {
+        "blackbox": "00000000000000000000000000000001"
+      },
+      "ports": {
+        "A": {
+          "direction": "input",
+          "bits": [ 2 ]
+        },
+        "B": {
+          "direction": "input",
+          "bits": [ 3 ]
+        },
+        "S": {
+          "direction": "input",
+          "bits": [ 4 ]
+        },
+        "Z": {
+          "direction": "output",
+          "bits": [ 5 ]
+        }
+      },
+      "cells": {
+      },
+      "netnames": {
+        "A": {
+          "hide_name": 0,
+          "bits": [ 2 ],
+          "attributes": {
+          }
+        },
+        "B": {
+          "hide_name": 0,
+          "bits": [ 3 ],
+          "attributes": {
+          }
+        },
+        "S": {
+          "hide_name": 0,
+          "bits": [ 4 ],
+          "attributes": {
+          }
+        },
+        "Z": {
+          "hide_name": 0,
+          "bits": [ 5 ],
+          "attributes": {
+          }
+        }
+      }
+    },
+    "NAND": {
+      "attributes": {
+        "blackbox": "00000000000000000000000000000001"
+      },
+      "ports": {
+        "A": {
+          "direction": "input",
+          "bits": [ 2 ]
+        },
+        "B": {
+          "direction": "input",
+          "bits": [ 3 ]
+        },
+        "Y": {
+          "direction": "output",
+          "bits": [ 4 ]
+        }
+      },
+      "cells": {
+      },
+      "netnames": {
+        "A": {
+          "hide_name": 0,
+          "bits": [ 2 ],
+          "attributes": {
+          }
+        },
+        "B": {
+          "hide_name": 0,
+          "bits": [ 3 ],
+          "attributes": {
+          }
+        },
+        "Y": {
+          "hide_name": 0,
+          "bits": [ 4 ],
+          "attributes": {
+          }
+        }
+      }
+    },
+    "NOR": {
+      "attributes": {
+        "blackbox": "00000000000000000000000000000001"
+      },
+      "ports": {
+        "A": {
+          "direction": "input",
+          "bits": [ 2 ]
+        },
+        "B": {
+          "direction": "input",
+          "bits": [ 3 ]
+        },
+        "Y": {
+          "direction": "output",
+          "bits": [ 4 ]
+        }
+      },
+      "cells": {
+      },
+      "netnames": {
+        "A": {
+          "hide_name": 0,
+          "bits": [ 2 ],
+          "attributes": {
+          }
+        },
+        "B": {
+          "hide_name": 0,
+          "bits": [ 3 ],
+          "attributes": {
+          }
+        },
+        "Y": {
+          "hide_name": 0,
+          "bits": [ 4 ],
+          "attributes": {
+          }
+        }
+      }
+    },
+    "NOT": {
+      "attributes": {
+        "blackbox": "00000000000000000000000000000001"
+      },
+      "ports": {
+        "A": {
+          "direction": "input",
+          "bits": [ 2 ]
+        },
+        "Y": {
+          "direction": "output",
+          "bits": [ 3 ]
+        }
+      },
+      "cells": {
+      },
+      "netnames": {
+        "A": {
+          "hide_name": 0,
+          "bits": [ 2 ],
+          "attributes": {
+          }
+        },
+        "Y": {
+          "hide_name": 0,
+          "bits": [ 3 ],
+          "attributes": {
+          }
+        }
+      }
+    },
+    "OR": {
+      "attributes": {
+        "blackbox": "00000000000000000000000000000001"
+      },
+      "ports": {
+        "A": {
+          "direction": "input",
+          "bits": [ 2 ]
+        },
+        "B": {
+          "direction": "input",
+          "bits": [ 3 ]
+        },
+        "Y": {
+          "direction": "output",
+          "bits": [ 4 ]
+        }
+      },
+      "cells": {
+      },
+      "netnames": {
+        "A": {
+          "hide_name": 0,
+          "bits": [ 2 ],
+          "attributes": {
+          }
+        },
+        "B": {
+          "hide_name": 0,
+          "bits": [ 3 ],
+          "attributes": {
+          }
+        },
+        "Y": {
+          "hide_name": 0,
+          "bits": [ 4 ],
+          "attributes": {
+          }
+        }
+      }
+    },
+    "XNOR": {
+      "attributes": {
+        "blackbox": "00000000000000000000000000000001"
+      },
+      "ports": {
+        "A": {
+          "direction": "input",
+          "bits": [ 2 ]
+        },
+        "B": {
+          "direction": "input",
+          "bits": [ 3 ]
+        },
+        "Y": {
+          "direction": "output",
+          "bits": [ 4 ]
+        }
+      },
+      "cells": {
+      },
+      "netnames": {
+        "A": {
+          "hide_name": 0,
+          "bits": [ 2 ],
+          "attributes": {
+          }
+        },
+        "B": {
+          "hide_name": 0,
+          "bits": [ 3 ],
+          "attributes": {
+          }
+        },
+        "Y": {
+          "hide_name": 0,
+          "bits": [ 4 ],
+          "attributes": {
+          }
+        }
+      }
+    },
+    "XOR": {
+      "attributes": {
+        "blackbox": "00000000000000000000000000000001"
+      },
+      "ports": {
+        "A": {
+          "direction": "input",
+          "bits": [ 2 ]
+        },
+        "B": {
+          "direction": "input",
+          "bits": [ 3 ]
+        },
+        "Y": {
+          "direction": "output",
+          "bits": [ 4 ]
+        }
+      },
+      "cells": {
+      },
+      "netnames": {
+        "A": {
+          "hide_name": 0,
+          "bits": [ 2 ],
+          "attributes": {
+          }
+        },
+        "B": {
+          "hide_name": 0,
+          "bits": [ 3 ],
+          "attributes": {
+          }
+        },
+        "Y": {
+          "hide_name": 0,
+          "bits": [ 4 ],
+          "attributes": {
+          }
+        }
+      }
+    },
+    "simple_1": {
+      "attributes": {
+        "hdlname": "\\simple_1",
+        "dynports": "00000000000000000000000000000001",
+        "top": "00000000000000000000000000000001",
+        "src": "/Volumes/Thunder/src/rust-masking/masquerade/tests/hdl/simple/simple_1.v:1.1-33.10"
+      },
+      "ports": {
+        "clk": {
+          "direction": "input",
+          "bits": [ 2 ]
+        },
+        "rst": {
+          "direction": "input",
+          "bits": [ 3 ]
+        },
+        "in_data": {
+          "direction": "input",
+          "bits": [ 4, 5 ]
+        },
+        "in_valid": {
+          "direction": "input",
+          "bits": [ 6 ]
+        },
+        "in_ready": {
+          "direction": "output",
+          "bits": [ 7 ]
+        },
+        "out_data": {
+          "direction": "output",
+          "bits": [ 8, 9 ]
+        },
+        "out_valid": {
+          "direction": "output",
+          "bits": [ 10 ]
+        },
+        "out_ready": {
+          "direction": "input",
+          "bits": [ 11 ]
+        }
+      },
+      "cells": {
+        "$abc$127$auto$blifparse.cc:386:parse_blif$128": {
+          "hide_name": 1,
+          "type": "NOT",
+          "parameters": {
+          },
+          "attributes": {
+          },
+          "port_directions": {
+            "A": "input",
+            "Y": "output"
+          },
+          "connections": {
+            "A": [ 3 ],
+            "Y": [ 12 ]
+          }
+        },
+        "$abc$127$auto$blifparse.cc:386:parse_blif$129": {
+          "hide_name": 1,
+          "type": "NOT",
+          "parameters": {
+          },
+          "attributes": {
+          },
+          "port_directions": {
+            "A": "input",
+            "Y": "output"
+          },
+          "connections": {
+            "A": [ 6 ],
+            "Y": [ 13 ]
+          }
+        },
+        "$abc$127$auto$blifparse.cc:386:parse_blif$130": {
+          "hide_name": 1,
+          "type": "NOT",
+          "parameters": {
+          },
+          "attributes": {
+          },
+          "port_directions": {
+            "A": "input",
+            "Y": "output"
+          },
+          "connections": {
+            "A": [ 11 ],
+            "Y": [ 14 ]
+          }
+        },
+        "$abc$127$auto$blifparse.cc:386:parse_blif$131": {
+          "hide_name": 1,
+          "type": "NAND",
+          "parameters": {
+          },
+          "attributes": {
+          },
+          "port_directions": {
+            "A": "input",
+            "B": "input",
+            "Y": "output"
+          },
+          "connections": {
+            "A": [ 10 ],
+            "B": [ 14 ],
+            "Y": [ 7 ]
+          }
+        },
+        "$abc$127$auto$blifparse.cc:386:parse_blif$132": {
+          "hide_name": 1,
+          "type": "NAND",
+          "parameters": {
+          },
+          "attributes": {
+          },
+          "port_directions": {
+            "A": "input",
+            "B": "input",
+            "Y": "output"
+          },
+          "connections": {
+            "A": [ 13 ],
+            "B": [ 7 ],
+            "Y": [ 15 ]
+          }
+        },
+        "$abc$127$auto$blifparse.cc:386:parse_blif$133": {
+          "hide_name": 1,
+          "type": "AND",
+          "parameters": {
+          },
+          "attributes": {
+          },
+          "port_directions": {
+            "A": "input",
+            "B": "input",
+            "Y": "output"
+          },
+          "connections": {
+            "A": [ 12 ],
+            "B": [ 15 ],
+            "Y": [ 16 ]
+          }
+        },
+        "$abc$127$auto$blifparse.cc:386:parse_blif$134": {
+          "hide_name": 1,
+          "type": "AND",
+          "parameters": {
+          },
+          "attributes": {
+          },
+          "port_directions": {
+            "A": "input",
+            "B": "input",
+            "Y": "output"
+          },
+          "connections": {
+            "A": [ 6 ],
+            "B": [ 7 ],
+            "Y": [ 17 ]
+          }
+        },
+        "$abc$127$auto$blifparse.cc:386:parse_blif$135": {
+          "hide_name": 1,
+          "type": "AND",
+          "parameters": {
+          },
+          "attributes": {
+          },
+          "port_directions": {
+            "A": "input",
+            "B": "input",
+            "Y": "output"
+          },
+          "connections": {
+            "A": [ 4 ],
+            "B": [ 5 ],
+            "Y": [ 18 ]
+          }
+        },
+        "$abc$127$auto$blifparse.cc:386:parse_blif$136": {
+          "hide_name": 1,
+          "type": "XOR",
+          "parameters": {
+          },
+          "attributes": {
+          },
+          "port_directions": {
+            "A": "input",
+            "B": "input",
+            "Y": "output"
+          },
+          "connections": {
+            "A": [ 4 ],
+            "B": [ 5 ],
+            "Y": [ 19 ]
+          }
+        },
+        "$abc$127$auto$blifparse.cc:386:parse_blif$137": {
+          "hide_name": 1,
+          "type": "MUX",
+          "parameters": {
+          },
+          "attributes": {
+          },
+          "port_directions": {
+            "A": "input",
+            "B": "input",
+            "S": "input",
+            "Z": "output"
+          },
+          "connections": {
+            "A": [ 9 ],
+            "B": [ 19 ],
+            "S": [ 17 ],
+            "Z": [ 20 ]
+          }
+        },
+        "$abc$127$auto$blifparse.cc:386:parse_blif$138": {
+          "hide_name": 1,
+          "type": "MUX",
+          "parameters": {
+          },
+          "attributes": {
+          },
+          "port_directions": {
+            "A": "input",
+            "B": "input",
+            "S": "input",
+            "Z": "output"
+          },
+          "connections": {
+            "A": [ 8 ],
+            "B": [ 18 ],
+            "S": [ 17 ],
+            "Z": [ 21 ]
+          }
+        },
+        "$auto$ff.cc:266:slice$110": {
+          "hide_name": 1,
+          "type": "DFF",
+          "parameters": {
+          },
+          "attributes": {
+            "src": "/Volumes/Thunder/src/rust-masking/masquerade/tests/hdl/simple/simple_1.v:21.5-31.8"
+          },
+          "port_directions": {
+            "C": "input",
+            "D": "input",
+            "Q": "output"
+          },
+          "connections": {
+            "C": [ 2 ],
+            "D": [ 21 ],
+            "Q": [ 8 ]
+          }
+        },
+        "$auto$ff.cc:266:slice$111": {
+          "hide_name": 1,
+          "type": "DFF",
+          "parameters": {
+          },
+          "attributes": {
+            "src": "/Volumes/Thunder/src/rust-masking/masquerade/tests/hdl/simple/simple_1.v:21.5-31.8"
+          },
+          "port_directions": {
+            "C": "input",
+            "D": "input",
+            "Q": "output"
+          },
+          "connections": {
+            "C": [ 2 ],
+            "D": [ 20 ],
+            "Q": [ 9 ]
+          }
+        },
+        "$auto$ff.cc:266:slice$112": {
+          "hide_name": 1,
+          "type": "DFF",
+          "parameters": {
+          },
+          "attributes": {
+            "src": "/Volumes/Thunder/src/rust-masking/masquerade/tests/hdl/simple/simple_1.v:21.5-31.8"
+          },
+          "port_directions": {
+            "C": "input",
+            "D": "input",
+            "Q": "output"
+          },
+          "connections": {
+            "C": [ 2 ],
+            "D": [ 16 ],
+            "Q": [ 10 ]
+          }
+        }
+      },
+      "netnames": {
+        "$abc$127$auto$rtlil.cc:2596:MuxGate$120": {
+          "hide_name": 1,
+          "bits": [ 21 ],
+          "attributes": {
+          }
+        },
+        "$abc$127$auto$rtlil.cc:2596:MuxGate$122": {
+          "hide_name": 1,
+          "bits": [ 20 ],
+          "attributes": {
+          }
+        },
+        "$abc$127$auto$rtlil.cc:2596:MuxGate$126": {
+          "hide_name": 1,
+          "bits": [ 16 ],
+          "attributes": {
+          }
+        },
+        "$abc$127$new_n13_": {
+          "hide_name": 1,
+          "bits": [ 12 ],
+          "attributes": {
+          }
+        },
+        "$abc$127$new_n14_": {
+          "hide_name": 1,
+          "bits": [ 13 ],
+          "attributes": {
+          }
+        },
+        "$abc$127$new_n15_": {
+          "hide_name": 1,
+          "bits": [ 14 ],
+          "attributes": {
+          }
+        },
+        "$abc$127$new_n17_": {
+          "hide_name": 1,
+          "bits": [ 15 ],
+          "attributes": {
+          }
+        },
+        "$abc$127$new_n19_": {
+          "hide_name": 1,
+          "bits": [ 17 ],
+          "attributes": {
+          }
+        },
+        "$abc$127$new_n20_": {
+          "hide_name": 1,
+          "bits": [ 18 ],
+          "attributes": {
+          }
+        },
+        "$abc$127$new_n21_": {
+          "hide_name": 1,
+          "bits": [ 19 ],
+          "attributes": {
+          }
+        },
+        "clk": {
+          "hide_name": 0,
+          "bits": [ 2 ],
+          "attributes": {
+            "MASQ": "clock",
+            "src": "/Volumes/Thunder/src/rust-masking/masquerade/tests/hdl/simple/simple_1.v:3.11-3.14"
+          }
+        },
+        "in_data": {
+          "hide_name": 0,
+          "bits": [ 4, 5 ],
+          "attributes": {
+            "MASQ": "secure",
+            "src": "/Volumes/Thunder/src/rust-masking/masquerade/tests/hdl/simple/simple_1.v:5.19-5.26"
+          }
+        },
+        "in_ready": {
+          "hide_name": 0,
+          "bits": [ 7 ],
+          "attributes": {
+            "src": "/Volumes/Thunder/src/rust-masking/masquerade/tests/hdl/simple/simple_1.v:7.12-7.20"
+          }
+        },
+        "in_valid": {
+          "hide_name": 0,
+          "bits": [ 6 ],
+          "attributes": {
+            "MASQ": "constant",
+            "src": "/Volumes/Thunder/src/rust-masking/masquerade/tests/hdl/simple/simple_1.v:6.11-6.19"
+          }
+        },
+        "out_data": {
+          "hide_name": 0,
+          "bits": [ 8, 9 ],
+          "attributes": {
+            "src": "/Volumes/Thunder/src/rust-masking/masquerade/tests/hdl/simple/simple_1.v:8.20-8.28"
+          }
+        },
+        "out_ready": {
+          "hide_name": 0,
+          "bits": [ 11 ],
+          "attributes": {
+            "MASQ": "constant",
+            "src": "/Volumes/Thunder/src/rust-masking/masquerade/tests/hdl/simple/simple_1.v:10.11-10.20"
+          }
+        },
+        "out_valid": {
+          "hide_name": 0,
+          "bits": [ 10 ],
+          "attributes": {
+            "src": "/Volumes/Thunder/src/rust-masking/masquerade/tests/hdl/simple/simple_1.v:9.12-9.21"
+          }
+        },
+        "rst": {
+          "hide_name": 0,
+          "bits": [ 3 ],
+          "attributes": {
+            "MASQ": "reset",
+            "src": "/Volumes/Thunder/src/rust-masking/masquerade/tests/hdl/simple/simple_1.v:4.11-4.14"
+          }
+        }
+      }
+    }
+  }
+}

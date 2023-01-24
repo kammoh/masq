@@ -1,0 +1,23 @@
+language.vhdl.standard = "08"
+
+[rtl]
+sources = ["simple_1.v"]
+top = "simple_1"
+clock_port = "clk"
+
+[rtl.attributes.MASQ]
+"simple_1/clk" = "clock"
+"simple_1/rst" = "reset"
+"simple_1/out_ready" = "constant"
+"simple_1/in_valid" = "constant"
+"simple_1/in_data" = "secure"
+
+
+[flow.yosys]
+liberty = "../custom_cells.lib"
+netlist = "simple_1.v"
+netlist_json = "simple_1.json"
+clocks.main_clock.freq="100MHz"
+netlist_attrs = true
+netlist_src_attrs = false
+# abc_dff = false
