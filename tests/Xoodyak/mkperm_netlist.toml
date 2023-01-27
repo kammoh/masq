@@ -1,0 +1,23 @@
+name = "mkPerm_netlist"
+
+[rtl]
+sources = [
+    "custom_cells.v",
+    "../../xeda_run/mkPerm/yosys/mkPerm_netlist.v",
+]
+top = "mkPerm"
+
+#[rtl.attributes.MASQ]
+#"mkPerm/CLK" = "clock"
+#"mkPerm/RST_N" = "reset"
+#"mkPerm/EN_state_out" = "constant"
+#"mkPerm/EN_state_in" = "constant"
+#"mkPerm/state_in_rc" = "constant"
+#"mkPerm/state_in_i" = "secure"
+
+
+[flow.yosys]
+platform = "nangate45"
+
+[flow.yosys.defines]
+BSV_POSITIVE_RESET = 1

@@ -13,10 +13,13 @@ chumsky = "0.8.0"
 daggy = { version = "0.8.0", features = ["stable_dag"] }
 derive_builder = "0.12.0"
 either = "1.8.0"
+from_iter = "1.1.0"
+funty = "2.0.0"
 itertools = "0.10.5"
 lalrpop-util = { version = "0.19.8", features = ["lexer"] }
 log = "0.4.17"
 nom = "7.1.3"
+num_enum = "0.5.9"
 peg = { version = "0.8.1", features = ["trace"] }
 pest = { version = "2.5.4", features = ["serde", "serde_json", "thiserror", "pretty-print"] }
 pest_derive = "2.5.4"

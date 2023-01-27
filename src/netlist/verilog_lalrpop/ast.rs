@@ -4,8 +4,7 @@ use std::ops::Range;
 use std::str::FromStr;
 use bitvec::prelude::Lsb0;
 use bitvec::view::BitView;
-use either::Either;
-use crate::logic::LogicVec;
+use crate::logic::LogicVec1;
 
 pub type Map<K, V> = BTreeMap<K, V>;
 
@@ -19,14 +18,35 @@ pub enum Primary {
 }
 
 #[derive(Clone, Debug, Eq, Hash, PartialEq)]
+pub enum Literal {
+    Number(Number),
+    StringLit(String),
+}
+
+#[derive(Clone, Debug, Eq, Hash, PartialEq)]
 pub enum Expr {
     Primary(Primary),
     Concatenation(Vec<Expr>),
 }
 
+#[derive(Clone, Debug, Eq, Hash, PartialEq)]
+pub enum ConstExpr {
+    Primary(Literal),
+    Concatenation(Vec<ConstExpr>),
+}
+
+impl ConstExpr {
+    pub fn eval(&self) -> Option<Number> {
+        match &self {
+            ConstExpr::Primary(Literal::Number(n)) => Some(n.clone()),
+            _ => None,
+        }
+    }
+}
+
 // Wires and expressions can be more than 64 bits
 #[derive(Clone, Debug, Default, Eq, Hash, PartialEq)]
-pub struct NumberValue(usize);
+struct NumberValue(usize);
 
 impl From<&NumberValue> for u64 {
     fn from(value: &NumberValue) -> Self {
@@ -57,11 +77,11 @@ pub type SizeType = u32;
 #[derive(Clone, Debug, Eq, Hash, PartialEq, Default)]
 pub struct Number {
     pub size: Option<SizeType>,
-    pub value: NumberValue,
+    value: NumberValue,
 }
 
 impl Number {
-    pub fn parse(size: Option<SizeType>, radix: u32, s: &str) -> Result<Self, ParseIntError> {
+    pub fn from_str_radix(s: &str, radix: u32, size: Option<SizeType>) -> Result<Self, ParseIntError> {
         let value = NumberValue::from_str_radix(s, radix)?;
         Ok(Self { size, value })
     }
@@ -73,15 +93,11 @@ impl Number {
     }
 }
 
-impl From<&Number> for u64 {
-    fn from(value: &Number) -> Self {
-        u64::from(&value.value)
-    }
-}
+impl TryFrom<&Number> for SizeType {
+    type Error = ();
 
-impl From<&Number> for SizeType {
-    fn from(value: &Number) -> Self {
-        SizeType::try_from(&value.value).unwrap()
+    fn try_from(value: &Number) -> Result<Self, Self::Error> {
+        SizeType::try_from(&value.value)
     }
 }
 
@@ -133,26 +149,28 @@ impl ModuleDeclaration {
             _ => None,
         }).flatten().collect()
     }
-    // assuming default value of signals is 0/false
-    // pub fn continuous_assigns(&self, net_widths: HashMap<String, SizeType>) -> HashMap<String, LogicVec> {
-    //     let ret = HashMap::new();
-    //     self.body.iter().filter_map(|i| match i {
-    //         ModuleItem::ContinuousAssign(assigns) => Some(assigns.iter().map(|a|
-    //             match (&a.0, &a.1) {
-    //                 (
-    //                     LValue::NetSlice(NetSlice(ident, slice)),
-    //                     Expr::Primary(Primary::Number(num))) => {
-    //                     let mut bit_assigns = Vec::new();
-    //                     for idx in slice.unwrap_or_default().range() {
-    //                         // bit_assigns.push(SizeType::from(slice)
-    //                     }
-    //                 }
-    //                 (_, _) => todo!("Not implemented!")
-    //             }
-    //         )),
-    //         _ => None,
-    //     }).flatten().collect()
-    // }
+
+    // assuming default value of signals is Z
+    pub fn continuous_assigns(&self, net_widths: HashMap<String, SizeType>) -> HashMap<String, LogicVec1> {
+        let ret = HashMap::new();
+        let assigns = self.body.iter().filter_map(|i| match i {
+            ModuleItem::ContinuousAssign(assigns) => Some(assigns),
+            _ => None,
+        }).flatten();
+        // for a in assigns {
+        //     match (&a.0, &a.1) {
+        //         (
+        //             LValue::NetSlice(NetSlice(ident, slice)),
+        //             Expr::Primary(Primary::Number(num))) => {
+        //             for idx in slice.unwrap_or_default().range() {
+        //                 // bit_assigns.push(SizeType::from(slice)
+        //             }
+        //         }
+        //         (_, _) => todo!("Not implemented!")
+        //     }
+        // }
+        ret
+    }
 }
 
 #[derive(Clone, Debug, Eq, Hash, PartialEq)]
@@ -172,10 +190,17 @@ pub enum Direction {
     InOut,
 }
 
-#[derive(Clone, Debug, Eq, Hash, PartialEq, Default)]
-pub struct Slice(pub SizeType, pub SizeType);
+#[derive(Clone, Debug, Eq, Hash, PartialEq)]
+pub struct Slice(pub Box<Expr>, pub Option<Box<Expr>>);
 
 impl Slice {
+
+}
+
+#[derive(Clone, Debug, Eq, Hash, PartialEq, Default)]
+pub struct ConstRange(pub SizeType, pub SizeType);
+
+impl ConstRange {
     #[inline(always)]
     pub fn hi(&self) -> SizeType {
         self.0
@@ -191,6 +216,15 @@ impl Slice {
     #[inline(always)]
     pub fn range(&self) -> Range<SizeType> {
         self.hi()..self.lo()
+    }
+    pub fn from_const_expr(start: &ConstExpr, end: &ConstExpr) -> Result<Self, ()> {
+        let do_eval = |s: &ConstExpr| s.eval().and_then(|n| SizeType::try_from(&n).ok());
+        match (do_eval(start), do_eval(end)) {
+            (Some(start), Some(end)) => {
+                Ok(Self(SizeType::from(start), SizeType::from(end)))
+            }
+            _ => Err(())
+        }
     }
 }
 
@@ -210,8 +244,8 @@ pub struct HierarchicalInstance(pub Ident, pub Connections);
 
 #[derive(Clone, Debug, Eq, Hash, PartialEq)]
 pub enum ModuleItem {
-    PortDeclaration(Attributes, Option<Slice>, Vec<Ident>, Direction),
-    NetDeclaration(Attributes, NetType, Option<Slice>, Vec<Ident>),
+    PortDeclaration(Attributes, Option<ConstRange>, Vec<Ident>, Direction),
+    NetDeclaration(Attributes, NetType, Option<ConstRange>, Vec<Ident>),
     ModuleInstantiation(Attributes, Ident, Vec<HierarchicalInstance>),
     ContinuousAssign(Vec<NetAssignment>),
 }

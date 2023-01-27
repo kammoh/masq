@@ -48,17 +48,16 @@ UnsizedHex: String = r"'[hH][0-9a-fA-FxXzZ][0-9a-fA-FxXzZ_]*" => <>[2..].replace
 Size: ast::SizeType = Decimal => ast::SizeType::from_str(&<>).unwrap();
 
 Number: ast::Number = {
-    <value:Decimal>                      => ast::Number::parse(None, 10, &value).unwrap(),
-    <size:Size?> <value:DecimalExplicit> => ast::Number::parse(size, 10, &value).unwrap(),
-    <size:Size?> <value:UnsizedBin>      => ast::Number::parse(size, 2, &value).unwrap(),
-    <size:Size?> <value:UnsizedOct>      => ast::Number::parse(size, 8, &value).unwrap(),
-    <size:Size?> <value:UnsizedHex>      => ast::Number::parse(size, 16, &value).unwrap(),
+    <value:Decimal>                      => ast::Number::from_str_radix(&value, 10, None).unwrap(),
+    <size:Size?> <value:DecimalExplicit> => ast::Number::from_str_radix(&value, 10, size).unwrap(),
+    <size:Size?> <value:UnsizedBin>      => ast::Number::from_str_radix(&value, 2, size).unwrap(),
+    <size:Size?> <value:UnsizedOct>      => ast::Number::from_str_radix(&value, 8, size).unwrap(),
+    <size:Size?> <value:UnsizedHex>      => ast::Number::from_str_radix(&value, 16, size).unwrap(),
 };
 
 
 StringLit: String = r#""[^"]*""# => <>[1..<>.len()-1].to_string();
 
-Concatenation: Vec<ast::Expr> = "{" <Comma<Expr>> "}";
 LValueConcatenation: Vec<ast::LValue> = "{" <Comma<LValue>> "}";
 
 
@@ -70,22 +69,32 @@ Primary: ast::Primary = {
     <ns:NetSlice> => ast::Primary::NetSlice(ns),
 }
 
+
+NetType = {"wire"};
+NetDeclaration: ast::ModuleItem = <attrs:AttrInst*> <nt:NetType?> <r:ConstRange?> <vars:Comma<Ident>> ";"
+        => ast::ModuleItem::NetDeclaration(attrs.into_iter().flatten().collect(), ast::NetType::from(nt), r, vars);
+
+Direction = {"input", "output", "inout"};
+PortDeclaration: ast::ModuleItem = <attrs:AttrInst*> <dir:Direction> <r:ConstRange?> <vars:Comma<Ident>> ";"
+        => ast::ModuleItem::PortDeclaration(attrs.into_iter().flatten().collect(), r, vars, ast::Direction::from_str(dir).unwrap());
+
+
+ConstRange: ast::ConstRange = "[" <start:ConstExpr> ":" <end:ConstExpr> "]" => ast::ConstRange::from_const_expr(&start, &end).unwrap();
+
+ConstExpr: ast::ConstExpr = {
+    <n:Number> => ast::ConstExpr::Primary(ast::Literal::Number(n)),
+    <s:StringLit> => ast::ConstExpr::Primary(ast::Literal::StringLit(s)),
+    "{" <e:Comma<ConstExpr>> "}" => ast::ConstExpr::Concatenation(e),
+}
+
 Expr: ast::Expr = {
     <Primary> => ast::Expr::Primary(<>),
-    <Concatenation> => ast::Expr::Concatenation(<>),
+    "{" <e:Comma<Expr>> "}" => ast::Expr::Concatenation(e),
 }
 
-SelectRange: ast::Slice = "[" <start:Number> ":" <end:Number> "]" => ast::Slice(ast::SizeType::from(&start), ast::SizeType::from(&end));
-SelectIndex: ast::Slice = "[" <idx:Number> "]" => {
-    let i = ast::SizeType::from(&idx);
-    ast::Slice(i, i)
-};
 
-Slice: ast::Slice = {
-    SelectRange,
-    SelectIndex,
-}
-
+Slice: ast::Slice = "[" <start:Expr> <end:SliceEnd?> "]" => ast::Slice(Box::new(start), end.map(Box::new) );
+SliceEnd: ast::Expr = ":" <end:Expr> => end;
 
 LValue: ast::LValue = {
     <NetSlice> => ast::LValue::NetSlice(<>),
@@ -96,14 +105,6 @@ LValue: ast::LValue = {
 
 AttrInst = "(*" <CommaPlus<AttrSpec>> "*)";
 AttrSpec: (ast::Ident, ast::Expr) = <i:Ident> "=" <v:Expr> => (i, v);
-
-NetType = {"wire"};
-NetDeclaration: ast::ModuleItem = <attrs:AttrInst*> <nt:NetType?> <r:SelectRange?> <vars:Comma<Ident>> ";"
-        => ast::ModuleItem::NetDeclaration(attrs.into_iter().flatten().collect(), ast::NetType::from(nt), r, vars);
-
-Direction = {"input", "output", "inout"};
-PortDeclaration: ast::ModuleItem = <attrs:AttrInst*> <dir:Direction> <r:SelectRange?> <vars:Comma<Ident>> ";"
-        => ast::ModuleItem::PortDeclaration(attrs.into_iter().flatten().collect(), r, vars, ast::Direction::from_str(dir).unwrap());
 
 ModuleItem: ast::ModuleItem = {
     PortDeclaration,
