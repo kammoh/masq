@@ -7,9 +7,8 @@ use super::node::{Node, NodePortId, NodeType};
 use super::{Circuit, NodeIndex};
 use boolinator::Boolinator;
 use itertools::Itertools;
-use petgraph::data::Build;
 use petgraph::{
-    visit::{Dfs, EdgeRef, Reversed},
+    visit::{Dfs, EdgeRef},
     Direction,
 };
 

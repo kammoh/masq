@@ -3,67 +3,7 @@ use std::collections::HashMap;
 
 use crate::utils::bool_from_int;
 
-/// Legal values for the direction of a port on a module
-#[derive(Copy, Clone, Serialize, Deserialize, Debug, Eq, PartialEq, Hash)]
-pub enum PortDirection {
-    #[serde(rename = "input")]
-    Input,
-    #[serde(rename = "output")]
-    Output,
-    #[serde(rename = "inout")]
-    InOut,
-}
-
-/// Special constant bit values
-#[derive(Copy, Clone, Serialize, Deserialize, Debug, Eq, PartialEq, Hash)]
-pub enum SpecialBit {
-    /// Constant 0
-    #[serde(rename = "0")]
-    _0,
-    /// Constant 1
-    #[serde(rename = "1")]
-    _1,
-    /// Constant X (invalid)
-    #[serde(rename = "x")]
-    X,
-    /// Constant Z (tri-state)
-    #[serde(rename = "z")]
-    Z,
-}
-
-
 pub type SignalId = u32;
-
-/// A number representing a single bit of a wire
-#[derive(Copy, Clone, Serialize, Deserialize, Debug, Eq, PartialEq, Hash)]
-#[serde(untagged)]
-pub enum BitVal {
-    /// An actual signal number
-    Signal(SignalId),
-    /// A special constant value
-    Constant(SpecialBit),
-}
-
-/// The value of an attribute/parameter
-#[derive(Clone, Serialize, Deserialize, Debug, Eq, PartialEq, Hash)]
-#[serde(untagged)]
-pub enum AttributeVal {
-    /// Numeric attribute value
-    Num(usize),
-    /// String attribute value
-    Str(String),
-}
-
-/// Represents an entire .json file used by Yosys
-#[derive(Clone, Serialize, Deserialize, Debug, Default, Eq, PartialEq)]
-pub struct Netlist {
-    /// The program that created this file.
-    #[serde(default)]
-    pub creator: String,
-    /// A map from module names to module objects contained in this .json file
-    #[serde(default)]
-    pub modules: HashMap<String, Module>,
-}
 
 /// Represents one module in the Yosys hierarchy
 #[derive(Clone, Serialize, Deserialize, Debug, Default, Eq, PartialEq)]
@@ -87,6 +27,64 @@ pub struct Module {
     #[serde(default)]
     pub netnames: HashMap<String, Netname>,
 }
+
+/// Legal values for the direction of a port on a module
+#[derive(Copy, Clone, Serialize, Deserialize, Debug, Eq, PartialEq, Hash)]
+pub enum PortDirection {
+    #[serde(rename = "input")]
+    Input,
+    #[serde(rename = "output")]
+    Output,
+    #[serde(rename = "inout")]
+    InOut,
+}
+
+/// Constant bit values
+#[derive(Copy, Clone, Serialize, Deserialize, Debug, Eq, PartialEq, Hash)]
+pub enum ConstBit {
+    /// Constant 0
+    #[serde(rename = "0")]
+    _0,
+    /// Constant 1
+    #[serde(rename = "1")]
+    _1,
+    /// Constant X (invalid)
+    #[serde(rename = "x")]
+    X,
+    /// Constant Z (tri-state)
+    #[serde(rename = "z")]
+    Z,
+}
+
+
+/// A number representing a single bit of a wire
+#[derive(Copy, Clone, Serialize, Deserialize, Debug, Eq, PartialEq, Hash)]
+#[serde(untagged)]
+pub enum BitVal {
+    /// An actual signal number
+    Signal(SignalId),
+    /// A special constant value
+    Constant(ConstBit),
+}
+
+#[derive(Clone, Serialize, Deserialize, Debug, Eq, PartialEq, Hash)]
+#[serde(untagged)]
+pub enum AttributeVal {
+    Number(usize),
+    String(String),
+}
+
+/// Represents an entire .json file used by Yosys
+#[derive(Clone, Serialize, Deserialize, Debug, Default, Eq, PartialEq)]
+pub struct Netlist {
+    /// The program that created this file.
+    #[serde(default)]
+    pub creator: String,
+    /// A map from module names to module objects contained in this .json file
+    #[serde(default)]
+    pub modules: HashMap<String, Module>,
+}
+
 
 /// Represents a port on a module
 #[derive(Clone, Serialize, Deserialize, Debug, Eq, PartialEq)]

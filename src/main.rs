@@ -1,10 +1,8 @@
-pub mod circuit;
-pub mod netlist;
-pub mod utils;
-
+use masquerade::circuit;
 use crate::circuit::Dot;
 use crate::circuit::Masking;
 use crate::circuit::NetlistAndLibrary;
+
 
 #[derive(thiserror::Error, Debug)]
 enum AppError {

@@ -3,13 +3,14 @@ use std::collections::HashMap;
 use boolinator::Boolinator;
 use itertools::Itertools;
 use petgraph::{
-    visit::{Dfs, EdgeRef, IntoNodeIdentifiers, IntoNodeReferences, Reversed},
+    visit::{Dfs, EdgeRef, Reversed},
     Direction,
 };
+use crate::circuit::node::NodeType;
 
 use super::{
-    node::{GateType, Node, NodeType},
-    Circuit, NodeIndex,
+    node::{GateType},
+    Circuit,
 };
 
 pub trait Masking {

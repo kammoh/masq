@@ -1,0 +1,143 @@
+// based on: https://insights.sigasi.com/tech/systemverilog.ebnf/
+use std::str::FromStr;
+use super::super::ast;
+
+#[LALR] grammar;
+
+// Zero or more comma-separated items
+Comma<T>: Vec<T> = {
+    <v:(<T> ",")*> <e:T?> => match e {
+        None => v,
+        Some(e) => {
+            let mut v = v;
+            v.push(e);
+            v
+        }
+    }
+};
+
+// One or more comma-separated items
+CommaPlus<T>: Vec<T> = {
+    <v:(<T> ",")*> <e:T> => {
+        let mut v = v;
+        v.push(e);
+        v
+    }
+};
+
+pub Netlist: Vec<ast::ModuleDeclaration> = <ModuleDeclaration*>;
+
+Ident: ast::Ident = {
+    r"[a-zA-Z_][0-9A-Za-z_]*" => ast::Ident::from(<>),
+    // escaped identifier
+    r"\\[!-~]*"               => ast::Ident::from(&<>[1..]),
+};
+
+ModuleDeclaration: ast::ModuleDeclaration =
+    <attrs:AttrInst*> "module" <name:Ident> "(" <ports:Comma<Port>> ")" ";" <body:(ModuleItem)*> "endmodule"
+        => ast::ModuleDeclaration {attrs: attrs.into_iter().flatten().collect(), name, ports, body};
+
+Port: ast::Port = <name:Ident> => ast::Port::from(name);
+
+Decimal: String = r"[0-9][0-9_]*" => <>.replace("_", "");
+DecimalExplicit: String = r"'[dD][0-9][0-9_]*" => <>[2..].replace("_", "");
+UnsizedBin: String = r"'[bB][01xXzZ][01xXzZ_]*" => <>[2..].replace("_", "");
+UnsizedOct: String = r"'[oO][7xXzZ][0-7xXzZ_]*" => <>[2..].replace("_", "");
+UnsizedHex: String = r"'[hH][0-9a-fA-FxXzZ][0-9a-fA-FxXzZ_]*" => <>[2..].replace("_", "");
+
+Size: ast::SizeType = Decimal => ast::SizeType::from_str(&<>).unwrap();
+
+Number: ast::Number = {
+    <value:Decimal>                      => ast::Number::parse(None, 10, &value).unwrap(),
+    <size:Size?> <value:DecimalExplicit> => ast::Number::parse(size, 10, &value).unwrap(),
+    <size:Size?> <value:UnsizedBin>      => ast::Number::parse(size, 2, &value).unwrap(),
+    <size:Size?> <value:UnsizedOct>      => ast::Number::parse(size, 8, &value).unwrap(),
+    <size:Size?> <value:UnsizedHex>      => ast::Number::parse(size, 16, &value).unwrap(),
+};
+
+
+StringLit: String = r#""[^"]*""# => <>[1..<>.len()-1].to_string();
+
+Concatenation: Vec<ast::Expr> = "{" <Comma<Expr>> "}";
+LValueConcatenation: Vec<ast::LValue> = "{" <Comma<LValue>> "}";
+
+
+NetSlice: ast::NetSlice = <id:Ident> <s:Slice?> => ast::NetSlice(id, s);
+
+Primary: ast::Primary = {
+    <n:Number> => ast::Primary::Number(n),
+    <s:StringLit> => ast::Primary::StringLit(s),
+    <ns:NetSlice> => ast::Primary::NetSlice(ns),
+}
+
+Expr: ast::Expr = {
+    <Primary> => ast::Expr::Primary(<>),
+    <Concatenation> => ast::Expr::Concatenation(<>),
+}
+
+SelectRange: ast::Slice = "[" <start:Number> ":" <end:Number> "]" => ast::Slice(ast::SizeType::from(&start), ast::SizeType::from(&end));
+SelectIndex: ast::Slice = "[" <idx:Number> "]" => {
+    let i = ast::SizeType::from(&idx);
+    ast::Slice(i, i)
+};
+
+Slice: ast::Slice = {
+    SelectRange,
+    SelectIndex,
+}
+
+
+LValue: ast::LValue = {
+    <NetSlice> => ast::LValue::NetSlice(<>),
+    <LValueConcatenation> => ast::LValue::Concatenation(<>)
+}
+
+//Assignment: ast::Assignment = <l:LValue> "=" <r:Expr> => ast::Assignment(l, r);
+
+AttrInst = "(*" <CommaPlus<AttrSpec>> "*)";
+AttrSpec: (ast::Ident, ast::Expr) = <i:Ident> "=" <v:Expr> => (i, v);
+
+NetType = {"wire"};
+NetDeclaration: ast::ModuleItem = <attrs:AttrInst*> <nt:NetType?> <r:SelectRange?> <vars:Comma<Ident>> ";"
+        => ast::ModuleItem::NetDeclaration(attrs.into_iter().flatten().collect(), ast::NetType::from(nt), r, vars);
+
+Direction = {"input", "output", "inout"};
+PortDeclaration: ast::ModuleItem = <attrs:AttrInst*> <dir:Direction> <r:SelectRange?> <vars:Comma<Ident>> ";"
+        => ast::ModuleItem::PortDeclaration(attrs.into_iter().flatten().collect(), r, vars, ast::Direction::from_str(dir).unwrap());
+
+ModuleItem: ast::ModuleItem = {
+    PortDeclaration,
+    NetDeclaration,
+    ModuleInstantiation,
+    ContinuousAssign,
+}
+
+ModuleInstantiation: ast::ModuleItem = {
+    <attrs:AttrInst*> <inst_name:Ident> <params:ParamValAssign?> <instances:CommaPlus<HierarchicalInstance>> ";"
+        => ast::ModuleItem::ModuleInstantiation(attrs.into_iter().flatten().collect(), inst_name, instances)
+}
+
+HierarchicalInstance :ast::HierarchicalInstance = <inst_name:Ident>  "(" <conns:Connections> ")" => ast::HierarchicalInstance(inst_name, conns);
+
+ParamValAssign = "#" "(" <Connections> ")";
+
+NamedConnection: (ast::Ident, ast::Expr) = "." <i:Ident> "(" <e:Expr> ")" => (i, e);
+Connections: ast::Connections = {
+    <CommaPlus<Expr>> => ast::Connections::Ordered(<>),
+    <CommaPlus<NamedConnection>> => ast::Connections::Named(<>),
+}
+
+NetAssignment : ast::NetAssignment = <l:LValue> "=" <e:Expr> => ast::NetAssignment(l, e);
+ContinuousAssign: ast::ModuleItem = "assign" <assigns:CommaPlus<NetAssignment>> ";"
+        => ast::ModuleItem::ContinuousAssign(assigns);
+
+// `match`: filter or name patterns
+// also: Declares the precedence of regular expressions
+// relative to one another when synthesizing the lexer
+match {
+    r"\s*" => { }, // skip whitespaces
+    r"//[^\n\r]*[\n\r]*" => { }, // skip // line comments
+    r"/\*[^*]*\*+(?:[^/*][^*]*\*+)*/" => { }, // skip /* block comments */
+} else {
+    _
+}

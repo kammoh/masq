@@ -3,7 +3,7 @@ use std::path::Path;
 
 use crate::circuit::node::Blackbox;
 use crate::netlist::json_netlist::{
-    AttributeVal, BitVal, Module, Netlist, Port, PortDirection, SignalId,
+    AttributeVal, BitVal, Netlist, PortDirection, SignalId,
 };
 use crate::utils::MapToVec;
 
@@ -79,7 +79,7 @@ impl TryFrom<&NetlistAndLibrary> for Circuit {
                 PortDirection::Input => {
                     for (idx, bit) in net.bits.iter().enumerate() {
                         let (node_type, is_secure) = match net.attributes.get("MASQ") {
-                            Some(AttributeVal::Str(s)) => match s.to_lowercase().as_str() {
+                            Some(AttributeVal::String(s)) => match s.to_lowercase().as_str() {
                                 "secure" => (NodeType::Input, true),
                                 "clock" => (NodeType::Clock, false),
                                 "reset" => (NodeType::Reset, false),

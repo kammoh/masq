@@ -13,7 +13,7 @@ impl TryFrom<&Circuit> for Netlist {
         let mut top = Module::default();
 
         top.attributes
-            .insert("top".to_string(), AttributeVal::Num(1));
+            .insert("top".to_string(), AttributeVal::Number(1));
 
         for nx in circuit.inputs.iter() {
             let node = &circuit.graph[*nx];

@@ -1,18 +1,18 @@
 use itertools::Itertools;
 
 use super::json_netlist::{
-    AttributeVal, BitVal, Cell, Module, Netlist, Port, PortDirection, SpecialBit,
+    AttributeVal, BitVal, Cell, Module, Netlist, PortDirection, ConstBit,
 };
 use std::{
-    collections::{hash_map, HashMap},
+    collections::HashMap,
     io::{Read, Write},
 };
 
-impl SpecialBit {
+impl ConstBit {
     pub fn to_bool(&self) -> Option<bool> {
         match self {
-            &SpecialBit::_0 => Some(false),
-            &SpecialBit::_1 => Some(true),
+            &ConstBit::_0 => Some(false),
+            &ConstBit::_1 => Some(true),
             _ => None,
         }
     }
@@ -21,8 +21,8 @@ impl SpecialBit {
 impl AttributeVal {
     pub fn to_number(&self) -> Option<usize> {
         match self {
-            &AttributeVal::Num(n) => Some(n),
-            &AttributeVal::Str(ref s) => {
+            &AttributeVal::Number(n) => Some(n),
+            &AttributeVal::String(ref s) => {
                 // If it's an empty string, the value was zero
                 if s.len() == 0 {
                     Some(0)
@@ -39,8 +39,8 @@ impl AttributeVal {
 
     pub fn to_string_if_string(&self) -> Option<&str> {
         match self {
-            &AttributeVal::Num(_) => None,
-            &AttributeVal::Str(ref s) => {
+            &AttributeVal::Number(_) => None,
+            &AttributeVal::String(ref s) => {
                 if s.len() == 0 {
                     // If it's an empty string then it wasn't originally a string
                     None
@@ -64,7 +64,7 @@ impl AttributeVal {
 }
 
 impl Cell {
-    pub fn input_ports(&self) -> impl Iterator<Item = (&String, &BitVal)> + '_ {
+    pub fn input_ports(&self) -> impl Iterator<Item=(&String, &BitVal)> + '_ {
         self.connections
             .iter()
             .filter_map(|(name, bits)| match self.port_directions.get(name) {
@@ -74,7 +74,7 @@ impl Cell {
             })
             .sorted_by(|a, b| Ord::cmp(&a.0, &b.0))
     }
-    pub fn output_ports(&self) -> impl Iterator<Item = (&String, &Vec<BitVal>)> + '_ {
+    pub fn output_ports(&self) -> impl Iterator<Item=(&String, &Vec<BitVal>)> + '_ {
         self.connections
             .iter()
             .filter_map(|(name, bits)| match self.port_directions.get(name) {
@@ -99,7 +99,7 @@ impl Module {
             .unwrap_or(false)
     }
 
-    pub fn filter_ports(&self, dir: PortDirection) -> impl Iterator<Item = &String> + '_ {
+    pub fn filter_ports(&self, dir: PortDirection) -> impl Iterator<Item=&String> + '_ {
         self.ports
             .iter()
             .filter_map(move |(n, p)| (p.direction == dir).then_some(n))

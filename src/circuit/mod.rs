@@ -38,7 +38,7 @@ pub struct Circuit {
     graph: StableDiGraph<Node, (NodePortId, NodePortId)>, // edges store src port and dst port
     input_ordering_map: HashMap<NodeType, Vec<String>>,
     blackboxes: HashMap<String, Blackbox>,
-    blackbox_impls: HashMap<String, Circuit>,
+    // blackbox_impls: HashMap<String, Circuit>,
     inputs: HashSet<NodeIndex>,
     clocks: HashSet<NodeIndex>,
     outputs: HashSet<NodeIndex>,
